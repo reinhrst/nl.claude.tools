@@ -1,4 +1,5 @@
 (ns nl.claude.tools.dct)
+(import 'edu.emory.mathcs.jtransforms.dct.DoubleDCT_1D); only needed for the faster dct/idct functions, can else be removed
 
 (defn dct-ii [data]
   "Does one-dimensional DCT-II transform, with a scaling factor. For more info see http://en.wikipedia.org/wiki/Discrete_Math/cosine_transform#DCT-II"
@@ -34,5 +35,13 @@
           (Math/sqrt (/ 2 N)))) ;scaling factor;
       (range N))))
 
-(def dct dct-ii)
-(def idct dct-iii)
+(defn dct [data]
+  (let [ddata (double-array data)]
+    (.forward (new DoubleDCT_1D (count data)) ddata true); no doubt it's even faster not to construct the class all the time but for now this is fast enough
+    (vec ddata)))
+
+(defn idct [data]
+  (let [ddata (double-array data)]
+    (.inverse (new DoubleDCT_1D (count data)) ddata true); no doubt it's even faster not to construct the class all the time but for now this is fast enough
+    (vec ddata)))
+

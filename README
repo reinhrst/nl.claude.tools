@@ -2,7 +2,7 @@
 
 Clojure tools by Claude. Contains
 
- * nl.claude.tools.dct: One dimensional Discrete Cosine Transform functions in clojure, including test data. Note: DCT is a prime candidate to be paralellized, and clojure is good at this. However this first version doesn't do anything parallel.
+ * nl.claude.tools.dct: One dimensional Discrete Cosine Transform functions in clojure, including test data. Note: DCT is a prime candidate to be paralellized, and clojure is good at this. However this first version doesn't do anything parallel. In addition, this version is EXTREMELY SLOW, probably for now you're better off using JTransforms. This version is for now just for reference purposes.
 
 ## Usage
 
@@ -13,6 +13,8 @@ Put the jar-file in your java extensions directory (on OSX for example /Library/
 (dct-iii [2 0 0 0])
 
 These are one dimensional dct operations. dct is a synonym for dct-ii, idct is a synonym for dct-iii
+
+EDIT: dct / idct are no longer synonyms but use the JTransform library instead because (for now??, until I fix this :))
 
 ## License
 
