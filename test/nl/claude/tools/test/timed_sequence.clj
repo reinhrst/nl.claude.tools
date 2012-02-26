@@ -10,20 +10,34 @@
          ~'start-time (.getTime (Date.))]
      [(~'todo) (- (.getTime (Date.)) ~'start-time)]))
 
-(deftest sequence-test
-  (let [test-sequence [1 2 3 4 5 6 7 8 9 10]
-        delay 0.1]
-    (let [result (how-long-ms (doall (timed-sequence test-sequence delay)))]
-      (is (= (result 0) test-sequence) "timed-sequence should not alter the sequence")
-      (is (<= 0 (- (result 1) (* 1000 delay (dec (count test-sequence)))) 20) "We don't want more than 20 ms overhead")) ;after the last one it's announcd directly that we're done
-    (let [result (how-long-ms (doall (take 2 (timed-sequence test-sequence delay))))]
-      (is (= (result 0) (take 2 test-sequence)) "take before or after timing should be equal")
-      (is (<= 0 (- (result 1) (* 1000 delay 2)) 20) "We don't want more than 20 ms overhead when taking")))
-  (let [test-sequence (range)
-        delay 0.1]
-    (let [result (how-long-ms (doall (take 20 (timed-sequence test-sequence delay))))]
-      (is (= (result 0) (take 20 test-sequence)) "should work with infinite sequence")
-      (is (<= 0 (- (result 1) (* 1000 delay 20)) 20) "infinity sequence should still take the right amount of time"))
-    (let [result (how-long-ms (doall (take 2000 (timed-sequence test-sequence 1/3000))))]
-      (is (= (result 0) (take 2000 test-sequence)) "should work with very long sequence")
-      (is (<= 0 (- (result 1) (* 1000 1/3000 2000)) 20) "even long sequence with small sleep should work (if fails, maybe computer is too slow?)"))))
+(defmacro test-equal [sequence delay selector]
+  `(is (= (~selector ~sequence) (doall (~selector (timed-sequence ~sequence ~delay)))) (str "expected sequences to be equal: (" '~selector '~sequence ") with delay " ~delay)))
+
+(defmacro test-timing [sequence delay selector]
+  `(let [~'result (how-long-ms (doall (~selector (timed-sequence ~sequence ~delay))))
+         ~'expected-delay (* (count (~'result 0)) ~delay 1000) ; *1000 because we want the delay in ms
+         ~'actual-delay (~'result 1)
+         ~'delay-difference (- ~'actual-delay ~'expected-delay)]
+     (is (< -1 ~'delay-difference 20) (str "The delay differce is not within limits; expected delay " ~'expected-delay " ms, actual delay " ~'actual-delay ". Note that because we're talking about timing here, other factors may influence the measurement (high load / slow computer)"))))
+
+(defn test-all
+  ([sequence] (test-all sequence 1/50))
+  ([sequence delay] (test-all sequence delay identity))
+  ([sequence delay selector]
+     (do (test-equal sequence delay selector) (test-timing sequence delay selector))))
+
+(deftest finite-sequence
+  (test-all [1 2 3 4 5 6 7 8 9 10]))
+
+(deftest finite-sequence-with-selector
+  (test-all (range 10) 0.01 (partial take 2)))
+
+(deftest infinite-sequence
+  (test-all (range) 0.002 (partial take 200)))
+
+(deftest infinite-sequence-sub-ms-timing
+  (test-all (range) 1/3000 (partial take 2000)))
+
+(deftest very-large-set
+  (test-all (range) 1/100000 (partial take 100000)))
+
