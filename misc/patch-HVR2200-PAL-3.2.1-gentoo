@@ -1,0 +1,196 @@
+diff -Naur linux2/drivers/media/video/saa7164/saa7164-api.c linux/drivers/media/video/saa7164/saa7164-api.c
+--- linux2/drivers/media/video/saa7164/saa7164-api.c	2012-03-02 20:11:57.000000000 +0000
++++ linux/drivers/media/video/saa7164/saa7164-api.c	2012-03-02 20:13:45.000000000 +0000
+@@ -568,7 +568,7 @@
+ 		tvaudio.std = TU_STANDARD_NTSC_M;
+ 		tvaudio.country = 1;
+ 	} else {
+-		tvaudio.std = TU_STANDARD_PAL_I;
++		tvaudio.std = 0x04; //TU_STANDARD_PAL_I;
+ 		tvaudio.country = 44;
+ 	}
+ 
+@@ -631,7 +631,7 @@
+ 	dprintk(DBGLVL_API, "%s(nr=%d type=%d val=%x)\n", __func__,
+ 		port->nr, port->type, val);
+ 
+-	if (port->nr == 0)
++	if (port->nr < 3) //== 0)
+ 		mas = 0xd0;
+ 	else
+ 		mas = 0xe0;
+diff -Naur linux2/drivers/media/video/saa7164/saa7164-cards.c linux/drivers/media/video/saa7164/saa7164-cards.c
+--- linux2/drivers/media/video/saa7164/saa7164-cards.c	2012-03-02 20:11:57.000000000 +0000
++++ linux/drivers/media/video/saa7164/saa7164-cards.c	2012-03-02 20:13:45.000000000 +0000
+@@ -263,6 +263,66 @@
+ 			.i2c_reg_len	= REGLEN_8bit,
+ 		} },
+ 	},
++	[SAA7164_BOARD_HAUPPAUGE_HVR2200_4] = {
++		.name		= "Hauppauge WinTV-HVR2200",
++		.porta		= SAA7164_MPEG_DVB,
++		.portb		= SAA7164_MPEG_DVB,
++                .portc          = SAA7164_MPEG_ENCODER,
++                .portd          = SAA7164_MPEG_ENCODER,
++                .porte          = SAA7164_MPEG_VBI,
++                .portf          = SAA7164_MPEG_VBI,
++		.chiprev	= SAA7164_CHIP_REV3,
++		.unit		= {{
++			.id		= 0x1d,
++			.type		= SAA7164_UNIT_EEPROM,
++			.name		= "4K EEPROM",
++			.i2c_bus_nr	= SAA7164_I2C_BUS_0,
++			.i2c_bus_addr	= 0xa0 >> 1,
++			.i2c_reg_len	= REGLEN_8bit,
++		}, {
++			.id		= 0x04,
++			.type		= SAA7164_UNIT_TUNER,
++			.name		= "TDA18271-1",
++			.i2c_bus_nr	= SAA7164_I2C_BUS_1,
++			.i2c_bus_addr	= 0xc0 >> 1,
++			.i2c_reg_len	= REGLEN_8bit,
++		}, {
++			.id		= 0x05,
++			.type		= SAA7164_UNIT_ANALOG_DEMODULATOR,
++			.name		= "TDA8290-1",
++			.i2c_bus_nr	= SAA7164_I2C_BUS_1,
++			.i2c_bus_addr	= 0x84 >> 1,
++			.i2c_reg_len	= REGLEN_8bit,
++		}, {
++			.id		= 0x1b,
++			.type		= SAA7164_UNIT_TUNER,
++			.name		= "TDA18271-2",
++			.i2c_bus_nr	= SAA7164_I2C_BUS_2,
++			.i2c_bus_addr	= 0xc0 >> 1,
++			.i2c_reg_len	= REGLEN_8bit,
++		}, {
++			.id		= 0x1c,
++			.type		= SAA7164_UNIT_ANALOG_DEMODULATOR,
++			.name		= "TDA8290-2",
++			.i2c_bus_nr	= SAA7164_I2C_BUS_2,
++			.i2c_bus_addr	= 0x84 >> 1,
++			.i2c_reg_len	= REGLEN_8bit,
++		}, {
++			.id		= 0x1e,
++			.type		= SAA7164_UNIT_DIGITAL_DEMODULATOR,
++			.name		= "TDA10048-1",
++			.i2c_bus_nr	= SAA7164_I2C_BUS_1,
++			.i2c_bus_addr	= 0x10 >> 1,
++			.i2c_reg_len	= REGLEN_8bit,
++		}, {
++			.id		= 0x1f,
++			.type		= SAA7164_UNIT_DIGITAL_DEMODULATOR,
++			.name		= "TDA10048-2",
++			.i2c_bus_nr	= SAA7164_I2C_BUS_2,
++			.i2c_bus_addr	= 0x12 >> 1,
++			.i2c_reg_len	= REGLEN_8bit,
++		} },
++	},
+ 	[SAA7164_BOARD_HAUPPAUGE_HVR2250] = {
+ 		.name		= "Hauppauge WinTV-HVR2250",
+ 		.porta		= SAA7164_MPEG_DVB,
+diff -Naur linux2/drivers/media/video/saa7164/saa7164-encoder.c linux/drivers/media/video/saa7164/saa7164-encoder.c
+--- linux2/drivers/media/video/saa7164/saa7164-encoder.c	2012-03-02 20:11:57.000000000 +0000
++++ linux/drivers/media/video/saa7164/saa7164-encoder.c	2012-03-02 20:13:45.000000000 +0000
+@@ -32,7 +32,25 @@
+ 	}, {
+ 		.name      = "NTSC-JP",
+ 		.id        = V4L2_STD_NTSC_M_JP,
+-	}
++	}, {
++                .name      = "PAL-I",
++                .id        = V4L2_STD_PAL_I,
++	}, {
++                .name      = "PAL-M",
++                .id        = V4L2_STD_PAL_M,
++	}, {
++                .name      = "PAL-N",
++                .id        = V4L2_STD_PAL_N,
++	}, {
++                .name      = "PAL-Nc",
++                .id        = V4L2_STD_PAL_Nc,
++	}, {
++                .name      = "PAL-B",
++                .id        = V4L2_STD_PAL_B,
++	}, {
++                .name      = "PAL-DK",
++                .id        = V4L2_STD_PAL_DK,
++        }
+ };
+ 
+ static const u32 saa7164_v4l2_ctrls[] = {
+@@ -1356,7 +1374,7 @@
+ 	.ioctl_ops     = &mpeg_ioctl_ops,
+ 	.minor         = -1,
+ 	.tvnorms       = SAA7164_NORMS,
+-	.current_norm  = V4L2_STD_NTSC_M,
++	.current_norm  = V4L2_STD_PAL_B,
+ };
+ 
+ static struct video_device *saa7164_encoder_alloc(
+@@ -1404,7 +1422,7 @@
+ 
+ 	/* Establish encoder defaults here */
+ 	/* Set default TV standard */
+-	port->encodernorm = saa7164_tvnorms[0];
++	port->encodernorm = saa7164_tvnorms[6];
+ 	port->width = 720;
+ 	port->mux_input = 1; /* Composite */
+ 	port->video_format = EU_VIDEO_FORMAT_MPEG_2;
+diff -Naur linux2/drivers/media/video/saa7164/saa7164-fw.c linux/drivers/media/video/saa7164/saa7164-fw.c
+--- linux2/drivers/media/video/saa7164/saa7164-fw.c	2012-03-02 20:11:57.000000000 +0000
++++ linux/drivers/media/video/saa7164/saa7164-fw.c	2012-03-02 20:13:45.000000000 +0000
+@@ -29,6 +29,9 @@
+ 
+ #define SAA7164_REV3_FIRMWARE		"NXP7164-2010-03-10.1.fw"
+ #define SAA7164_REV3_FIRMWARE_SIZE	4019072
++//#define SAA7164_REV3_FIRMWARE		"v4l-saa7164-1.0.3-3.fw"
++//#define SAA7164_REV3_FIRMWARE_SIZE	4038864
++
+ 
+ struct fw_header {
+ 	u32	firmwaresize;
+diff -Naur linux2/drivers/media/video/saa7164/saa7164-vbi.c linux/drivers/media/video/saa7164/saa7164-vbi.c
+--- linux2/drivers/media/video/saa7164/saa7164-vbi.c	2012-03-02 20:11:57.000000000 +0000
++++ linux/drivers/media/video/saa7164/saa7164-vbi.c	2012-03-02 20:25:10.000000000 +0000
+@@ -28,7 +28,26 @@
+ 	}, {
+ 		.name      = "NTSC-JP",
+ 		.id        = V4L2_STD_NTSC_M_JP,
+-	}
++        }, {
++                .name      = "PAL-I",
++                .id        = V4L2_STD_PAL_I,
++        }, {
++                .name      = "PAL-M",
++                .id        = V4L2_STD_PAL_M,
++        }, {
++                .name      = "PAL-N",
++                .id        = V4L2_STD_PAL_N,
++        }, {
++                .name      = "PAL-Nc",
++                .id        = V4L2_STD_PAL_Nc,
++        }, {
++                .name      = "PAL-B",
++                .id        = V4L2_STD_PAL_B,
++        }, {
++                .name      = "PAL-DK",
++                .id        = V4L2_STD_PAL_DK,
++        }
++
+ };
+ 
+ static const u32 saa7164_v4l2_ctrls[] = {
+diff -Naur linux2/drivers/media/video/saa7164/saa7164.h linux/drivers/media/video/saa7164/saa7164.h
+--- linux2/drivers/media/video/saa7164/saa7164.h	2012-03-02 20:11:57.000000000 +0000
++++ linux/drivers/media/video/saa7164/saa7164.h	2012-03-02 20:23:42.000000000 +0000
+@@ -115,7 +115,8 @@
+ #define DBGLVL_CPU 8192
+ 
+ #define SAA7164_NORMS \
+-	(V4L2_STD_NTSC_M |  V4L2_STD_NTSC_M_JP |  V4L2_STD_NTSC_443)
++        (V4L2_STD_NTSC_M |  V4L2_STD_NTSC_M_JP |  V4L2_STD_NTSC_443 | V4L2_STD_PAL_I | \
++	 V4L2_STD_PAL_M | V4L2_STD_PAL_N | V4L2_STD_PAL_Nc | V4L2_STD_PAL_B | V4L2_STD_PAL_DK)
+ 
+ enum port_t {
+ 	SAA7164_MPEG_UNDEFINED = 0,
