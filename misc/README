@@ -1,1 +1,1 @@
-patch-HVR2200-PAL-3.2.1-gentoo -- patch for the kernel drivers from the linux-3.2.1-gentoo kernel, to add PAL support to the HVR-2200 (and possibly other SAA7164 cards) in analog reception. See http://linuxtv.org/wiki/index.php/Hauppauge_WinTV-HVR-2200
+patch-HVR2200-PAL-3.2.1-gentoo -- patch for the kernel drivers from the linux-3.2.1-gentoo kernel, to add PAL support to the HVR-2200 (and possibly other SAA7164 cards) in analog reception. See http://linuxtv.org/wiki/index.php/Hauppauge_WinTV-HVR-2200 . Also see readme in parent directory.
