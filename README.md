@@ -4,6 +4,7 @@
 
  * nl.claude.tools.dct: One dimensional Discrete Cosine Transform functions in clojure, including test data. Note: DCT is a prime candidate to be paralellized, and clojure is good at this. However this first version doesn't do anything parallel. In addition, this version is EXTREMELY SLOW, probably for now you're better off using JTransforms. This version is for now just for reference purposes.
  * nl.claude.tools.timed-sequence: Make a sequence timed. Provided a sequence, produces a new (lazy) sequence where a new item becomes available every x seconds.
+ * misc: other stuff, currenly containing just the HVR-2200 PAL support patch
 
 ## Usage
 
