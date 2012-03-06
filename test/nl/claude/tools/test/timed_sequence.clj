@@ -1,14 +1,6 @@
 (ns nl.claude.tools.test.timed-sequence
-  (:use [nl.claude.tools.timed-sequence])
-  (:use [clojure.test])
-  (:import java.util.Date))
-
-(defmacro how-long-ms [& x]
-  "Returns a veactor with first element the result of the body, and second element the number of miliseconds the body took"
-  
-  `(let [~'todo #(do ~@x)
-         ~'start-time (.getTime (Date.))]
-     [(~'todo) (- (.getTime (Date.)) ~'start-time)]))
+  (:use (nl.claude.tools timed-sequence test-tools))
+  (:use clojure.test))
 
 (defmacro test-equal [sequence delay selector]
   `(is (= (~selector ~sequence) (doall (~selector (timed-sequence ~sequence ~delay)))) (str "expected sequences to be equal: (" '~selector '~sequence ") with delay " ~delay)))

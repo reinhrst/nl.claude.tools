@@ -28,6 +28,12 @@ Has one function: timed-sequence. This takes a sequence, and a delay. The functi
 
 Works even with delays of less than 1/1000 second. However, because java time only has milisecond resolution, a timing of 0.0001 means that every 1ms a burst of 10 items becomes available. Probably there is something better to use than java time, but this suits my needs
 
+### Test tools
+Tools that can be used in tests, currently just the "how-long-ms" macro. This macro returns a vector, first element the body's return value, second element the number of ms it took.
+
+(use 'nl.claude.tools.test-tools)
+(how-long-ms (Thread/sleep 300) 42) --> should return [42 300]; the second number may be slightly higher if the rest of the body took more than one ms
+
 ### HVR-2200 patch
 See the misc directory. Patches the Hauppauge HVR-2200 v4l2 drivers to work with the PAL analog signal. This patch is adapted from http://thread.gmane.org/gmane.linux.drivers.video-input-infrastructure/26212/focus=26524 to a newer kernel version. Also see http://www.mythtvtalk.com/you-waiting-hvr-2200-2250-linux-driver-10906-6/ and http://linuxtv.org/wiki/index.php/Hauppauge_WinTV-HVR-2200 .  
 
