@@ -15,3 +15,10 @@
 (defn long-to-byte-array-be [long]
   "converts (signed) long to big endian byte array"
   (number-to-byte-array-be long 8))
+
+(defn byte-array-be-to-number [bytes]
+  (apply bit-or
+         (map bit-shift-left
+              (reverse
+               (map #(bit-and 0xFF %) bytes))
+              (range 0 Double/POSITIVE_INFINITY 8))))
