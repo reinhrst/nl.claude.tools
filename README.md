@@ -6,6 +6,7 @@
  * nl.claude.tools.timed-sequence: Make a sequence timed. Provided a sequence, produces a new (lazy) sequence where a new item becomes available every x seconds.
  * nl.claude.tools.test-tools: Helpers for writing tests
  * nl.claude.tools.conversion: Easy conversion functions
+ * nl.claude.tools.net: easy networking in clojure
  * misc: other stuff, currenly containing just the HVR-2200 PAL support patch
 
 ## Usage
@@ -38,6 +39,9 @@ Tools that can be used in tests, currently just the "how-long-ms" macro. This ma
 
 ### Conversion functions
 Convert functions. They should speak for themselves. One note: when an int is expected, a long will work, but will act as if it's converted to a uint
+
+### Networking
+Allows you to easily set up a clojure server. (new-connections-sequence) returns a lazy-seq that provides a new socket every time a new connection is made.
 
 ### HVR-2200 patch
 See the misc directory. Patches the Hauppauge HVR-2200 v4l2 drivers to work with the PAL analog signal. This patch is adapted from http://thread.gmane.org/gmane.linux.drivers.video-input-infrastructure/26212/focus=26524 to a newer kernel version. Also see http://www.mythtvtalk.com/you-waiting-hvr-2200-2250-linux-driver-10906-6/ and http://linuxtv.org/wiki/index.php/Hauppauge_WinTV-HVR-2200 .  
