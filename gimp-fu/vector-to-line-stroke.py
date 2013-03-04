@@ -25,12 +25,15 @@ def vector_to_line_stroke(image, vector, layer, color="#000000", width=1, capsty
     tmpfile.flush();
     newlayer = pdb.gimp_file_load_layer(image, tmpfile.name)
     tmpfile.close()
-    pdb.gimp_image_insert_layer(image, newlayer, layer.parent, pdb.gimp_image_get_item_position(image, layer))
-    mergedlayer = pdb.gimp_image_merge_down(image, newlayer, EXPAND_AS_NECESSARY)
+    image.add_layer(newlayer) #needs to be added to the image to be able to copy from
+    copyname = pdb.gimp_edit_named_copy(newlayer, "stroke")
+    image.remove_layer(newlayer)
+    floating_sel = pdb.gimp_edit_named_paste(layer, copyname, True)
+    pdb.gimp_floating_sel_anchor(floating_sel)
 
 register(
     "python_fu_vector_to_line_stroke",    
-    "Vector (path) to a line stroke, v0.1",   
+    "Vector (path) to a line stroke, v0.2",   
     "There is a ui option to go from a vector (path) to a line stroke, but this is not exposed through script-fu. This function provides a work-around for doing that (through saving the path as an SVG and then importing that). Probably because of the tempfile function, it will not work under Windows (but who runs GIMP under Windows anyways right (i.e. if you run GIMP, go to UNIX), developed on OSX, against GIMP 2.8",
     "Reinoud Elhorst", 
     "Claude ICT, released under the same license as the GIMP versions the script works under", 
@@ -40,7 +43,7 @@ register(
     [
       (PF_IMAGE, 'image', 'Image', None),
       (PF_VECTORS, 'vector', 'Vector (path)', None),
-      (PF_LAYER, 'layer', 'The target layer for the stroke. Note: this layer gets replaced!', None),
+      (PF_DRAWABLE, 'layer', 'The target layer for the stroke', None),
       (PF_STRING, 'color', 'Color as string in some way that is SVG comaptible (e.g. "black", or "#FF0000")', "#000000"),
       (PF_INT, 'width', 'Line width', 1),
       (PF_STRING, 'capstyle', 'Some valid SVG cap style (i.e. "butt", "square", or "round")', "butt"),
@@ -48,7 +51,6 @@ register(
       (PF_INT, 'miterlimit', '''The miterlimit (google thisif you don't understand it)''', 10)
     ], 
     [
-#        (PF_LAYER, 'mergedlayer', 'The new layer that gets created with the old layer contents and the new stroke')
     ],
     vector_to_line_stroke,
     )
@@ -56,4 +58,4 @@ register(
 main()
 
 #usage: Create an image, with at least one vector (one path), and then run:
-#pdb.python_fu_vector_to_line_stroke(gimp.image_list()[0], gimp.image_list()[0].vectors[0], gimp.image_list()[0].layers[0], "#000000", 10, "butt", "miter", 10);
+#pdb.python_fu_vector_to_line_stroke(gimp.image_list()[0], gimp.image_list()[0].vectors[0], gimp.image_list()[0].layers[0], "#000000", 10, "butt", "miter", 10)
