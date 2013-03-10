@@ -7,7 +7,7 @@
     width="128" height="99"
     viewBox="0 0 256 198"
     >
-    <defs id="defs4">
+    <defs>
         <style>
             <![CDATA[
                 .button {stroke-width:1.2px; filter:url(#topshadow);}
@@ -40,7 +40,7 @@
             <stop offset="0.51" style="stop-color:#93252E;" />
             <stop offset="0.51" style="stop-color:#8D131E;" />
         </linearGradient>
-        <filter id="topshadow" x="-10%" y="-10%" width="120%" height="120%">
+        <filter id="topshadow">
             <feOffset result="offOut" in="SourceGraphic" dx="0" dy="-1px" />
             <feColorMatrix result="matrixOut" in="offOut" type="matrix"
                 values=".3 0  0  0 0
@@ -59,7 +59,7 @@
         </filter>
     
         <g id="button" class="button">
-            <rect id="button" x="0.6" y="1.6" width="126.8" height="63.8" rx="10" ry="10" />
+            <rect x="0.6" y="1.6" width="126.8" height="63.8" rx="10" ry="10" />
         </g>
         <g id="buttons">
             <use xlink:href="#button" x="0"   y="0" class="up" />

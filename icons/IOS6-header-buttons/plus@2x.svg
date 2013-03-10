@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<svg
+    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="66" height="30"
+    viewBox="0 0 132 60"
+    >
+    <defs>
+        <style>
+            <![CDATA[
+                .button {stroke-width:1.2px; filter:url(#shadow);}
+                .up {fill:url(#upfill); stroke:url(#upborder);}
+                .down {fill:url(#downfill); stroke:url(#downborder);}
+                
+                .icon {fill:#FFF; filter:url(#iconshadow); stroke: none;}
+            ]]>
+        </style>
+        <linearGradient id="upborder" x1="0%" x2="0%" y1="0%" y2="100%">
+            <stop offset="0" style="stop-color:#505965;" />
+            <stop offset="1" style="stop-color:#2F4769;" />
+        </linearGradient>
+        <linearGradient id="upfill" x1="0%" x2="0%" y1="0%" y2="100%">
+            <stop offset="0" style="stop-color:#99AAC2;" />
+            <stop offset="1" style="stop-color:#41618D;" />
+        </linearGradient>
+        <linearGradient id="downborder" x1="0%" x2="0%" y1="0%" y2="100%">
+            <stop offset="0" style="stop-color:#494F5B;" />
+            <stop offset="1" style="stop-color:#1C2C4F;" />
+        </linearGradient>
+        <linearGradient id="downfill" x1="0%" x2="0%" y1="0%" y2="100%">
+            <stop offset="0" style="stop-color:#8B97AF" />
+            <stop offset="1" style="stop-color:#273E6B;" />
+        </linearGradient>
+        <filter  color-interpolation-filters="sRGB" id="iconshadow">
+            <feOffset result="offOut" in="SourceGraphic" dx="0" dy="-2px" />
+            <feColorMatrix result="matrixOut" in="offOut" type="matrix"
+                values="0  0  0  0 .21
+                        0  0  0  0 .26
+                        0  0  0  0 .31
+                        0  0  0  1 0" />
+            <feBlend in="SourceGraphic" in2="matrixOut" mode="normal" />
+        </filter>
+        <filter id="shadow" color-interpolation-filters="sRGB">
+            <feOffset result="offOut" in="SourceGraphic" dx="0" dy="-1px" />
+            <feColorMatrix result="matrixOut1" in="offOut" type="matrix"
+                values=".65 0   0   0 0
+                        0   .65 0   0 0
+                        0   0   .65 0 0
+                        0   0   0   1 0" />
+            <feBlend in="SourceGraphic" in2="matrixOut1" mode="normal" result="withtop" />
+            <feOffset result="offOut" in="SourceGraphic" dx="0" dy="1.2px" />
+            <feColorMatrix result="matrixOut2" in="offOut" type="matrix"
+                values="0  0  0  0  1
+                        0  0  0  0  1
+                        0  0  0  0  1
+                        0  0  0  .3 0" />
+            <feBlend in="withtop" in2="matrixOut2" mode="normal" />
+        </filter>
+    
+        <g id="plus" class="icon">
+            <rect x="30" y="16" width="6" height="26" />
+            <rect x="20" y="26" width="26" height="6" />
+        </g>
+        <g id="button" class="button">
+            <rect x="0.6" y="1.6" width="64.8" height="55.8" rx="10" ry="10" />
+            <use xlink:href="#plus" x="0"   y="0" />
+        </g>
+        <g id="buttons">
+            <use xlink:href="#button" x="0"   y="0" class="up" />
+            <use xlink:href="#button" x="66"  y="0" class="down" />
+        </g>
+    </defs>
+    <use xlink:href="#buttons" x="0" y="0" />
+</svg>
