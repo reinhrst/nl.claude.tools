@@ -4,8 +4,8 @@
     xmlns:svg="http://www.w3.org/2000/svg"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="128" height="30"
-    viewBox="0 0 256 60"
+    width="128" height="60"
+    viewBox="0 0 256 120"
     >
     <defs>
         <style>
@@ -48,7 +48,7 @@
             <feBlend in="withtop" in2="matrixOut2" mode="normal" />
         </filter>
     
-        <g id="button" class="button">
+        <g id="back" class="button">
            <path
                 d="M 1.4,30.5 C 1.4,30.5
                      21,57.4 24,57.4 24,57.4
@@ -59,10 +59,18 @@
                      24,1.6 24,1.6 21,1.6
                      1.4,30.5 1.4,30.5 Z" />
         </g>
+        <g id="button" class="button">
+           <rect x="0.6" y="1.6" width="126.8" height="55.8" rx="10" ry="10" />
+        </g>
+        <g id="backs">
+            <use xlink:href="#back" x="0"   y="0" class="up" />
+            <use xlink:href="#back" x="128"  y="0" class="down" />
+        </g>
         <g id="buttons">
             <use xlink:href="#button" x="0"   y="0" class="up" />
             <use xlink:href="#button" x="128"  y="0" class="down" />
         </g>
     </defs>
     <use xlink:href="#buttons" x="0" y="0" />
+    <use xlink:href="#backs" x="0" y="60" />
 </svg>
